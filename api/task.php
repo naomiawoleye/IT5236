@@ -98,7 +98,7 @@ require_once 'credentials.php';
 	$task = json_decode(file_get_contents('php://input'),true);
 	if ($task == NULL) {
 		http_response_code(400);
-		var_dump();
+		echo 'missing json body';
 		exit();
 	}
 	
