@@ -4,7 +4,6 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Declare the credentials to the database
-$dbconnecterror = FALSE;
 $dbh = NULL;
 
 require_once 'credentials.php';
