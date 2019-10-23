@@ -88,8 +88,6 @@ require_once 'credentials.php';
 
 //ADD TASK
 } else if ($_SERVER['REQUEST_METHOD'] == "POST"){
-	//http_response_code(405); //method not allowed
-
 	//Decoding the json body from the request 
 	$task = json_decode(file_get_contents('php://input'),true);
 	if ($task == NULL) {
@@ -129,8 +127,8 @@ require_once 'credentials.php';
 			$sql = "INSERT INTO doList (complete, listItem, finishDate) VALUES (:complete, :listItem, :finishDate)";
 			$stmt = $dbh->prepare($sql);			
 			$stmt->bindParam(":complete", $complete);
-			$stmt->bindParam(":listItem", $_POST['listItem']);
-			$stmt->bindParam(":finishDate", $finBy);
+			$stmt->bindParam(":listItem", $taskName);
+			$stmt->bindParam(":finishDate", $taskDate);
 			$response = $stmt->execute();	
 			$taskID = $dbh->lastInsertId();
 			http_response_code(201);
@@ -166,12 +164,12 @@ require_once 'credentials.php';
 			$stmt->bindParam(":listID", $listID);
 		
 			$response = $stmt->execute();	
-			http_response_code(200);
+			http_response_code(204);
 			exit();
 			
 		} catch (PDOException $e) {
 			http_response_code(504);
-			echo "database error";1
+			echo "database error";
 			
 			exit();
 		}	

@@ -1,8 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 // Declare the credentials to the database
 $dbconnecterror = FALSE;
 $dbh = NULL;
@@ -32,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 			$stmt = $dbh->prepare($sql);
 			$stmt->execute();
 			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			http_response_code(201); //task created
+			http_response_code(200); //task created
 			echo json_encode ($result);
 			exit();
 			

@@ -1,29 +1,6 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-
-
-// Declare the credentials to the database
-$dbconnecterror = FALSE;
-$dbh = NULL;
-
-require_once 'credentials.php';
-
-try{
-	
-	$conn_string = "mysql:host=".$dbserver.";dbname=".$db;
-	
-	$dbh= new PDO($conn_string, $dbusername, $dbpassword);
-	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	
-}catch(Exception $e){
-	$dbconnecterror = TRUE;
-}
-
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-	
+	$listItem = $_POST['listItem'];
 	$listID = $_POST['listID'];
 	
 	if (array_key_exists('fin', $_POST)) {
@@ -36,28 +13,42 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	} else {
 		$finBy = $_POST['finBy'];
 	}
-	$listItem = $_POST['listItem'];
+
+	//Make a call to the api 
+	
+	//Build URL for API
+	$url= "http://52.90.89.104/api/task.php?listID=$listID";
+	//Create a JSON strong 
+	$data = array('completed'=>$complete,'taskName'=>$listItem,'taskDate'=>$finBy);
+	$data_json = json_encode($data); //This comman turns array 2 string
+	
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json','Content-Length: ' . strlen($data_json)));
+	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+	curl_setopt($ch, CURLOPT_POSTFIELDS,$data_json);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	$response  = curl_exec($ch); //Body of the response
+	$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	curl_close($ch);
 	
 
-	if (!$dbconnecterror) {
-		try {
-			$sql = "UPDATE doList SET complete=:complete, listItem=:listItem, finishDate=:finishDate WHERE listID=:listID";
-			$stmt = $dbh->prepare($sql);			
-			$stmt->bindParam(":complete", $complete);
-			$stmt->bindParam(":listItem", $listItem);
-			$stmt->bindParam(":finishDate", $finBy);
-			$stmt->bindParam(":listID", $listID);
-
-			$response = $stmt->execute();	
-			
-			header("Location: index.php");
-			
-		} catch (PDOException $e) {
-			header("Location: index.php?error=edit");
-			
-		}	
-	} else {
+	//If we get a 204 status code
+	if ($httpcode == 204){
+		header("Location: index.php");
+	}else {
+		//If we do not get a 204 status code
 		header("Location: index.php?error=edit");
 	}
+	
+	
+			
+	
+	//API errors 
+	
+	
+
+			
+		
 }
 ?>
