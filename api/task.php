@@ -1,8 +1,4 @@
-	
 <?php 
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1); 
-error_reporting(E_ALL);
 // Declare the credentials to the database
 	$dbconnecterror = FALSE;
 	$dbh = NULL; 
@@ -86,7 +82,7 @@ require_once 'credentials.php';
 		}	
 	} else {
 		http_response_code(504);
-		echo "database error update";
+		echo "database error";
 		exit();
 	}
 
@@ -144,7 +140,7 @@ require_once 'credentials.php';
 			
 		} catch (PDOException $e) {
 			http_response_code(504);
-			echo "database error insert";
+			echo "database error";
 			exit();
 		}	
 	} else {
@@ -170,17 +166,18 @@ require_once 'credentials.php';
 			$stmt->bindParam(":listID", $listID);
 		
 			$response = $stmt->execute();	
-			http_response_code(201);
+			http_response_code(200);
 			exit();
 			
 		} catch (PDOException $e) {
 			http_response_code(504);
-			echo "database error";
+			echo "database error";1
+			
 			exit();
 		}	
 	} else {
 		http_response_code(504);
-		echo "database error delete";
+		echo "database error";
 		exit();
 	}
 
