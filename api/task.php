@@ -86,7 +86,7 @@ require_once 'credentials.php';
 		}	
 	} else {
 		http_response_code(504);
-		echo "database error";
+		echo "database error update";
 		exit();
 	}
 
@@ -144,7 +144,7 @@ require_once 'credentials.php';
 			
 		} catch (PDOException $e) {
 			http_response_code(504);
-			echo "database error";
+			echo "database error insert";
 			exit();
 		}	
 	} else {
@@ -180,7 +180,7 @@ require_once 'credentials.php';
 		}	
 	} else {
 		http_response_code(504);
-		echo "database error";
+		echo "database error delete";
 		exit();
 	}
 
