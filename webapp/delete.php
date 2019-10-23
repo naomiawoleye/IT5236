@@ -15,8 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	curl_close($ch);
 	
-	var_dump($httpcode);
-	
 	if ($httpcode == 204){	
 		header("Location: index.php");
 	} else {
