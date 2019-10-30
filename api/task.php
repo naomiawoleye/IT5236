@@ -1,7 +1,6 @@
 <?php 
 // Declare the credentials to the database
-	$dbconnecterror = FALSE;
-	$dbh = NULL; 
+$dbh = NULL; 
 
 require_once 'credentials.php'; 
 	try{
@@ -12,7 +11,6 @@ require_once 'credentials.php';
 		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		
 	}catch(Exception $e){
-		//$dbconnecterror = TRUE;
 		//Datbase issues were encoutered 
 		http_response_code(504);
 		//to get out of php
@@ -64,27 +62,21 @@ require_once 'credentials.php';
 		//Add the other two fields here
 		
 		
-	if (!$dbconnecterror) { 
-		try {
-			$sql = "UPDATE doList SET complete=:complete, listItem=:listItem, finishDate=:finishDate WHERE listID=:listID"; 
-			$stmt = $dbh->prepare($sql); 
-			$stmt->bindParam(":complete", $complete); 
-			$stmt->bindParam(":listItem", $taskName); 
-			$stmt->bindParam(":finishDate", $taskDate); 
-			$stmt->bindParam(":listID", $listID); 
-			$response = $stmt->execute();
-			http_response_code(204);
-			exit();	
+	try {
+		$sql = "UPDATE doList SET complete=:complete, listItem=:listItem, finishDate=:finishDate WHERE listID=:listID"; 
+		$stmt = $dbh->prepare($sql); 
+		$stmt->bindParam(":complete", $complete); 
+		$stmt->bindParam(":listItem", $taskName); 
+		$stmt->bindParam(":finishDate", $taskDate); 
+		$stmt->bindParam(":listID", $listID); 
+		$response = $stmt->execute();
+		http_response_code(204);
+		exit();	
 
-		} catch (PDOException $e) {
-			http_response_code(504);
-			exit();
-		}	
-	} else {
+	} catch (PDOException $e) {
 		http_response_code(504);
-		echo "database error";
 		exit();
-	}
+	}	
 
 //ADD TASK
 } else if ($_SERVER['REQUEST_METHOD'] == "POST"){
@@ -122,31 +114,24 @@ require_once 'credentials.php';
 		   exit();
 	   }
 	
-	   if (!$dbconnecterror) {
-		try {
-			$sql = "INSERT INTO doList (complete, listItem, finishDate) VALUES (:complete, :listItem, :finishDate)";
-			$stmt = $dbh->prepare($sql);			
-			$stmt->bindParam(":complete", $complete);
-			$stmt->bindParam(":listItem", $taskName);
-			$stmt->bindParam(":finishDate", $taskDate);
-			$response = $stmt->execute();	
-			$taskID = $dbh->lastInsertId();
-			http_response_code(201);
+	try {
+		$sql = "INSERT INTO doList (complete, listItem, finishDate) VALUES (:complete, :listItem, :finishDate)";
+		$stmt = $dbh->prepare($sql);			
+		$stmt->bindParam(":complete", $complete);
+		$stmt->bindParam(":listItem", $taskName);
+		$stmt->bindParam(":finishDate", $taskDate);
+		$response = $stmt->execute();	
+		$taskID = $dbh->lastInsertId();
+		http_response_code(201);
 
-			exit();
+		exit();
 
-			
-		} catch (PDOException $e) {
-			http_response_code(504);
-			echo "database error";
-			exit();
-		}	
-	} else {
+
+	} catch (PDOException $e) {
 		http_response_code(504);
 		echo "database error";
 		exit();
-	}   
-
+	}	
 
 //DELETE TASK
 } else if ($_SERVER['REQUEST_METHOD'] == "DELETE"){
@@ -157,33 +142,24 @@ require_once 'credentials.php';
 			echo "Missing list id";
 			exit();
 	}
-	if (!$dbconnecterror) {
-		try {
-			$sql = "DELETE FROM doList where listID = :listID";
-			$stmt = $dbh->prepare($sql);			
-			$stmt->bindParam(":listID", $listID);
-		
-			$response = $stmt->execute();	
-			http_response_code(204);
-			exit();
-			
-		} catch (PDOException $e) {
-			http_response_code(504);
-			echo "database error";
-			
-			exit();
-		}	
-	} else {
+
+	try {
+		$sql = "DELETE FROM doList where listID = :listID";
+		$stmt = $dbh->prepare($sql);			
+		$stmt->bindParam(":listID", $listID);
+
+		$response = $stmt->execute();	
+		http_response_code(204);
+		exit();
+
+	} catch (PDOException $e) {
 		http_response_code(504);
 		echo "database error";
-		exit();
-	}
 
+		exit();
+	}	
 } else {
 	http_response_code(405); //method not allowed
 	exit();
 }
 
-
-
-?>
