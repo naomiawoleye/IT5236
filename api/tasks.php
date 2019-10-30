@@ -31,24 +31,23 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 			$final = [];
 			
 			foreach ($result as $task) {
-				//Rename task
-				
+				//Rename keys				
 				$task['taskName'] = $task['listItem'];
 				$task['taskDate'] = $task['finishDate'];
 				$task['completed'] = $task['complete'];
 				
-				//delete old 
+				// Translate between booleans and numbers
+				$task['completed'] = $task['completed'] ? true : false;
+				
+				//delete old keys
 				unset ($task['listItem'], $task['finishDate'], $task['complete']);
 				
 				//store upadte task
 				$final[] = $task;
 			}
 			
-			
-			
-			
 			http_response_code(200); //task created
-			echo json_encode ($result);
+			echo json_encode ($final);
 			exit();
 			
 		} catch (PDOException $e) {
