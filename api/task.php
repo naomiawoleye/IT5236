@@ -39,7 +39,7 @@ require_once 'credentials.php';
 		}
 
 		if (array_key_exists('completed', $task)) {
-			$complete = $task["completed"];
+			$complete = $task['completed'] ? 1 : 0;
 		} else {
 			http_response_code(400);
 			//the bad request
@@ -98,12 +98,7 @@ require_once 'credentials.php';
 	
 	//Data Validation
 	if (array_key_exists('completed', $task)) {
-		$complete = $task["completed"];
-		if($complete == TRUE) {
-			$complete =1;
-		} else {
-			$complete =0;
-		}
+		$complete = $task['completed'] ? 1 : 0;
 	   } else {
 		   http_response_code(400);
 		   //the bad request
